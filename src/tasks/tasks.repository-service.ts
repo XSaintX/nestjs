@@ -1,17 +1,27 @@
-import { EntityRepository, Repository } from 'typeorm';
+/**
+ * Tasks Repository Service
+ * handles data persistence and retrieval for Task entities using TypeORM.
+ */
+
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
-import { Inject, Injectable } from '@nestjs/common';
 
-// @EntityRepository(Task)
 @Injectable()
-export class TasksRepository extends Repository<Task> {
-    async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
+export class TasksRepository {
+  constructor(
+    @InjectRepository(Task)
+    public readonly repo: Repository<Task>,
+  ) {}
+
+  async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
     const { status, search } = filterDto;
 
-    const query = this.createQueryBuilder('task');
+    const query = this.repo.createQueryBuilder('task');
 
     if (status) {
       query.andWhere('task.status = :status', { status });
@@ -31,13 +41,13 @@ export class TasksRepository extends Repository<Task> {
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     const { title, description } = createTaskDto;
 
-    const task = this.create({
+    const task = this.repo.create({
       title,
       description,
       status: TaskStatus.OPEN,
     });
 
-    await this.save(task);
+    await this.repo.save(task);
     return task;
   }
 }
