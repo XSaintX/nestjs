@@ -5,12 +5,13 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
 import { UsersRepository } from './users.repository';
+import { EntityRepository, Repository } from 'typeorm';
+import { UserService } from './users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: UsersRepository,
+    private userService: UserService
   ) {
     super({
       secretOrKey: 'topSecret51',
@@ -20,9 +21,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: JwtPayload): Promise<User> {
     const { username } = payload;
-    console.log('Payload', payload);
-    console.log('Payload username:', username);
-    const user: User | null = await this.usersRepository.repo.findOne({ where: { username: username } });
+    const user  = await this.userService.getUser(username);
+    console.log('DEBUG', user);
+    //const user: User | null = await this.usersRepository.repo.findOne({ where: { username: username } });
 
     if (!user) {
       throw new UnauthorizedException();

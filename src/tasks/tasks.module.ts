@@ -4,11 +4,16 @@ import { TasksService } from './tasks.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TasksRepository } from './tasks.repository-service';
 import { Task } from './task.entity';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from 'src/auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     // repository to be used within the module
     TypeOrmModule.forFeature([Task]),
+    AuthModule
   ],
   controllers: [TasksController],
   providers: [TasksService, TasksRepository],
