@@ -8,16 +8,28 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { UserService } from './users.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: 'topSecret51',
-      signOptions: {
-        expiresIn: 3600,
-      },
+    JwtModule.registerAsync({
+      imports:[ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (c: ConfigService) => ({
+        secret: c.get<string>('JWT_SECRET') || '',
+        signOptions: {
+          expiresIn: 3600,
+        },
+      }),
     }),
+    //JwtModule.register({
+      // secret: 'topSecret51',
+      // signOptions: {
+      //   expiresIn: 3600,
+      //},
+    //}),
     // repository to be used within the module
     TypeOrmModule.forFeature([User]),
   ],
