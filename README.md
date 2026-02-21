@@ -46,16 +46,11 @@ Task Management API is a backend application that allows authenticated users to 
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/task-management.git
+git clone https://github.com/XSaintX/starting_with_nestjs.git
 cd task-management
 
 # Install dependencies
 npm install
-
-# Set up environment variables
-cp .env.stage.dev .env.stage.dev.local
-# Edit .env.stage.dev with your DB credentials and JWT secret
-```
 
 ### Running the App
 
