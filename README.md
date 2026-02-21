@@ -52,6 +52,11 @@ cd task-management
 # Install dependencies
 npm install
 
+# Set up environment variables
+cp .env.stage.dev .env.stage.dev.local
+# Edit .env.stage.dev with your DB credentials and JWT secret
+```
+
 ### Running the App
 
 ```bash
